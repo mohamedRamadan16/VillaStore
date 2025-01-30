@@ -9,7 +9,14 @@ namespace MagicVilla
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            /// if you want to allow to return an xml format from the API
+            //builder.Services.AddControllers(options =>
+            //{
+            //    options.ReturnHttpNotAcceptable = true;
+            //}).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
+
+            builder.Services.AddControllers().AddNewtonsoftJson();
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 

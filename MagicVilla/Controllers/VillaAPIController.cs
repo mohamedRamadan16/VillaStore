@@ -1,4 +1,6 @@
 ﻿using MagicVilla.Models;
+using MagicVilla.Models.DTOs;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagicVilla.Controllers
@@ -8,14 +10,87 @@ namespace MagicVilla.Controllers
     public class VillaAPIController:ControllerBase
     {
         [HttpGet]
-        public IEnumerable<Villa> GetAllVillas()
+        [ProducesResponseType(200)]
+        public ActionResult<IEnumerable<VillaDTO>> GetAllVillas()
         {
-            return new List<Villa>()
-            {
-                new Villa() {Id = 1, Name = "RRVS19"},
-                new Villa() {Id = 2, Name = "RRVS18"},
-                new Villa() {Id = 3, Name = "RRVS17"}
-            };
+            return Ok(VillaStore.VillaList);
         }
+
+        [HttpGet("{id:int}")]
+        [ProducesResponseType(200, Type = typeof(VillaDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<VillaDTO> GetVilla(int id)
+        {
+            if (id <= 0)
+                return BadRequest();
+            VillaDTO villa = VillaStore.VillaList.FirstOrDefault(v => v.Id == id);
+            if (villa == null)
+                return NotFound();
+            return Ok(villa); 
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public ActionResult AddVilla(VillaDTO villa)
+        {
+            if(villa == null)
+                return BadRequest();
+
+            // custome validation
+            if(VillaStore.VillaList.FirstOrDefault(v => v.Name.ToLower() == villa.Name.ToLower()) != null)
+            {
+                ModelState.AddModelError("CustomError", "Villa Name Must Be Unique!");
+                return BadRequest(ModelState);
+            }
+
+            VillaStore.AddVilla(villa);
+            return CreatedAtAction("GetVilla", new {id = villa.Id}, villa);
+        }
+
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public ActionResult DeleteVilla(int id)
+        {
+            if(id <= 0)
+                return BadRequest();
+
+            VillaDTO villa = VillaStore.VillaList.FirstOrDefault(v => v.Id == id);
+            if(villa == null) 
+                return NotFound();
+
+            VillaStore.DeleteVilla(villa);
+            return NoContent();
+        }
+
+        [HttpPut]
+        public ActionResult UpdateVilla([FromBody] VillaDTO villaFromRequest)
+        {
+            if(villaFromRequest == null || villaFromRequest.Id <= 0)
+                return BadRequest();
+
+            VillaStore.UpdateVilla(villaFromRequest);
+            return NoContent();
+        }
+
+        [HttpPatch("{id:int}")]
+        public IActionResult UpdateCertainField(int id, JsonPatchDocument<VillaDTO> VillaFromRequest)
+        {
+            if(id <= 0 || VillaFromRequest == null)
+                return BadRequest();
+            VillaDTO villaFromDb = VillaStore.VillaList.FirstOrDefault(v => v.Id == id);
+            if (villaFromDb == null)
+                return NotFound();
+
+            VillaFromRequest.ApplyTo(villaFromDb, ModelState);
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return NoContent();
+        }
+
     }
 }
