@@ -1,5 +1,5 @@
 
-using Serilog;
+using MagicVilla.Loggings;
 
 namespace MagicVilla
 {
@@ -11,8 +11,8 @@ namespace MagicVilla
 
             // Add services to the container.
 
-            Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("log/villalogs.txt", rollingInterval:RollingInterval.Day).CreateLogger();
-            builder.Host.UseSerilog();
+            //Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("log/villalogs.txt", rollingInterval:RollingInterval.Day).CreateLogger();
+            //builder.Host.UseSerilog();
 
             /// if you want to allow to return an xml format from the API
             //builder.Services.AddControllers(options =>
@@ -24,6 +24,9 @@ namespace MagicVilla
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+
+            /// custom logging
+            builder.Services.AddSingleton<ILogging, Logging>();
 
             var app = builder.Build();
 
