@@ -1,4 +1,6 @@
 
+using Serilog;
+
 namespace MagicVilla
 {
     public class Program
@@ -8,6 +10,9 @@ namespace MagicVilla
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().WriteTo.File("log/villalogs.txt", rollingInterval:RollingInterval.Day).CreateLogger();
+            builder.Host.UseSerilog();
 
             /// if you want to allow to return an xml format from the API
             //builder.Services.AddControllers(options =>
