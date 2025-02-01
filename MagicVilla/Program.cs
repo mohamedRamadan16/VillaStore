@@ -1,4 +1,4 @@
-
+using MagicVilla;
 using MagicVilla.Data;
 using MagicVilla.Loggings;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +22,11 @@ namespace MagicVilla
             //    options.ReturnHttpNotAcceptable = true;
             //}).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 
+            builder.Services.AddAutoMapper(typeof(MappingConfig));
             builder.Services.AddControllers().AddNewtonsoftJson();
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
