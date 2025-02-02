@@ -1,6 +1,8 @@
 using MagicVilla;
 using MagicVilla.Data;
 using MagicVilla.Loggings;
+using MagicVilla.Repos;
+using MagicVilla.Repos.IRepo;
 using Microsoft.EntityFrameworkCore;
 
 namespace MagicVilla
@@ -27,6 +29,7 @@ namespace MagicVilla
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+            builder.Services.AddScoped<IVillaRepository, VillaRepository>();
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
