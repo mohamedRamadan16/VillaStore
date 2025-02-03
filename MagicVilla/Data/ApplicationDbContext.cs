@@ -8,13 +8,19 @@ namespace MagicVilla.Data
         public ApplicationDbContext() { }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<Villa> Villas { get; set; }
-
+        public DbSet<VillaNumber> VillasNumbers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Villa>()
                 .Property(v => v.CreatedDate)
                 .HasDefaultValueSql("GETDATE()");
 
+            modelBuilder.Entity<VillaNumber>()
+                .Property(v => v.CreatedDate)
+                .HasDefaultValueSql("GETDATE()");
+            modelBuilder.Entity<VillaNumber>()
+                .Property(v => v.UpdatedDate)
+                .HasDefaultValueSql("GETDATE()");
 
             // seeding some Villas.
             modelBuilder.Entity<Villa>().HasData(

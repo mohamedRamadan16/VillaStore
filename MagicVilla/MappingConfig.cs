@@ -17,6 +17,11 @@ namespace MagicVilla
 
             CreateMap<VillaUpdateDTO, Villa>().ForMember(dest => dest.CreatedDate, opt => opt.Ignore());
             CreateMap<Villa, VillaUpdateDTO>();
+
+            CreateMap<VillaNumber, VillaNumberDTO>().ReverseMap();
+            CreateMap<VillaNumber, VillaNumberCreatedDTO>().ReverseMap();
+            CreateMap<VillaNumber, VillaNumberUpdatedDTO>().ReverseMap();
+
         }
     }
 }

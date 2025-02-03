@@ -30,6 +30,7 @@ namespace MagicVilla
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
             builder.Services.AddScoped<IVillaRepository, VillaRepository>();
+            builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
