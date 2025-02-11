@@ -3,7 +3,10 @@ using MagicVilla.Data;
 using MagicVilla.Loggings;
 using MagicVilla.Repos;
 using MagicVilla.Repos.IRepo;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace MagicVilla
 {
@@ -31,9 +34,34 @@ namespace MagicVilla
             builder.Services.AddOpenApi();
             builder.Services.AddScoped<IVillaRepository, VillaRepository>();
             builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+            });
+
+            builder.Services.AddAuthentication(options =>
+            {
+                // Check With JWT Token in header
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                // [Authorize]
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // return unauthorized instead of notfound
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>   // Verified key
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    //ValidIssuer = builder.Configuration["JWT:IssuerURL"],
+                    //ValidAudience = builder.Configuration["JWT:AudienceURL"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["ApiSettings:SecretKey"]))
+                };
+
             });
 
             /// custom logging
@@ -48,6 +76,8 @@ namespace MagicVilla
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

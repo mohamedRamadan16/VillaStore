@@ -4,6 +4,7 @@ using MagicVilla.Loggings;
 using MagicVilla.Models;
 using MagicVilla.Models.DTOs;
 using MagicVilla.Repos.IRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,7 @@ namespace MagicVilla.Controllers
 
 
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(200)]
         public async Task<ActionResult<APIResponse>> GetAllVillas()
         {
@@ -53,6 +55,7 @@ namespace MagicVilla.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(200, Type = typeof(VillaDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
