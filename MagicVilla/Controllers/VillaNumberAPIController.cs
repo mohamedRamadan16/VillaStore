@@ -13,7 +13,7 @@ using System.Net;
 namespace MagicVilla.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/VillaNumberAPI")]
     public class VillaNumberAPIController:ControllerBase
     {
         protected APIResponse _response;
@@ -36,7 +36,7 @@ namespace MagicVilla.Controllers
         {
             try
             {
-                IEnumerable<VillaNumber> villaNumberList = await _villaNumberRepository.GetAllAsync();
+                IEnumerable<VillaNumber> villaNumberList = await _villaNumberRepository.GetAllAsync(includeProperties:"Villa");
                 _response.statusCode = HttpStatusCode.OK;
                 _response.Result = _mapper.Map<List<VillaNumberDTO>>(villaNumberList);
                 return Ok(_response);

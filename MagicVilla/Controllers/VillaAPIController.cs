@@ -12,7 +12,7 @@ using System.Net;
 namespace MagicVilla.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/VillaAPI")]
     public class VillaAPIController:ControllerBase
     {
         protected APIResponse _response;
