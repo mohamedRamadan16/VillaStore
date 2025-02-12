@@ -34,7 +34,6 @@ namespace MagicVilla.Controllers
 
 
         [HttpGet]
-        [Authorize]
         [ProducesResponseType(200)]
         public async Task<ActionResult<APIResponse>> GetAllVillas()
         {
@@ -54,8 +53,8 @@ namespace MagicVilla.Controllers
             return _response;
         }
 
+
         [HttpGet("{id:int}")]
-        [Authorize(Roles = "Admin")]
         [ProducesResponseType(200, Type = typeof(VillaDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -92,6 +91,8 @@ namespace MagicVilla.Controllers
             return _response;
 
         }
+
+        [Authorize(Roles = "admin")]
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -134,6 +135,8 @@ namespace MagicVilla.Controllers
             return _response;
         }
 
+        [Authorize(Roles = "admin")]
+
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -171,6 +174,8 @@ namespace MagicVilla.Controllers
 
             return _response;
         }
+
+        [Authorize(Roles = "admin")]
 
         [HttpPut]
         public async Task<ActionResult<APIResponse>> UpdateVilla([FromBody] VillaUpdateDTO updateDTO)

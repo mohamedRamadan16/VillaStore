@@ -1,5 +1,6 @@
 using Magic_Villa_MVC.Services;
 using Magic_Villa_MVC.Services.IServices;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Magic_Villa_MVC
 {
@@ -19,6 +20,28 @@ namespace Magic_Villa_MVC
             builder.Services.AddHttpClient<IVillaNumberService, VillaNumberService>();
             builder.Services.AddScoped<IVillaNumberService, VillaNumberService>();
 
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            builder.Services.AddHttpClient<IAuthService, AuthService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                          .AddCookie(options =>
+                          {
+                              options.Cookie.HttpOnly = true;
+                              options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                              options.LoginPath = "/Auth/Login";
+                              options.AccessDeniedPath = "/Auth/AccessDenied";
+                              options.SlidingExpiration = true;
+                          });
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(100);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -31,8 +54,9 @@ namespace Magic_Villa_MVC
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
+            //app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSession();
 
             app.MapStaticAssets();
             app.MapControllerRoute(

@@ -4,6 +4,7 @@ using MagicVilla.Loggings;
 using MagicVilla.Models;
 using MagicVilla.Models.DTOs;
 using MagicVilla.Repos.IRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -87,6 +88,8 @@ namespace MagicVilla.Controllers
 
         }
 
+        [Authorize(Roles = "admin")]
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -125,6 +128,8 @@ namespace MagicVilla.Controllers
             return _response;
         }
 
+        [Authorize(Roles = "admin")]
+
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -162,6 +167,8 @@ namespace MagicVilla.Controllers
 
             return _response;
         }
+
+        [Authorize(Roles = "admin")]
 
         [HttpPut]
         public async Task<ActionResult<APIResponse>> UpdateVilla([FromBody] VillaNumberUpdatedDTO updateDTO)
