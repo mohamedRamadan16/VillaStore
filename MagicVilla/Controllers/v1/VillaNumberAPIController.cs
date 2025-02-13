@@ -66,12 +66,16 @@ namespace MagicVilla.v1.Controllers
                 if (id <= 0)
                 {
                     _response.statusCode = HttpStatusCode.BadRequest;
+                    _response.isSuccess = false;
+                    _response.Errors = new List<string>() { "Invalid Villa Number" };
                     return BadRequest(_response);
                 }
                 var villaNum = await _villaNumberRepository.GetAsync(v => v.VillaNo == id);
                 if (villaNum == null)
                 {
                     _response.statusCode = HttpStatusCode.NotFound;
+                    _response.isSuccess = false;
+                    _response.Errors = new List<string>() { "Invalid Villa Number" };
                     return NotFound(_response);
                 }
 

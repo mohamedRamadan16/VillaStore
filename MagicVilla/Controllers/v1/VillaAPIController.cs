@@ -40,7 +40,7 @@ namespace MagicVilla.v1.Controllers
         //[ResponseCache(Duration = 30)]
         [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(200)]
-        public async Task<ActionResult<APIResponse>> GetAllVillas([FromQuery(Name = "OccupancyFilter")] int? occupancy, [FromQuery] string? name, int pageSize = 2, int pageNumber = 1)
+        public async Task<ActionResult<APIResponse>> GetAllVillas([FromQuery(Name = "OccupancyFilter")] int? occupancy, [FromQuery] string? name, int pageSize = 0, int pageNumber = 1)
         {
             try
             {
@@ -89,12 +89,16 @@ namespace MagicVilla.v1.Controllers
                 {
                     _logger.Log($"Error Getting Villa With ID : {id}", "Error");
                     _response.statusCode = HttpStatusCode.BadRequest;
+                    _response.isSuccess = false;
+                    _response.Errors = new List<string>() { "Invalid Villa Id" };
                     return BadRequest(_response);
                 }
                 var villa = await _villaRepository.GetAsync(v => v.Id == id);
                 if (villa == null)
                 {
                     _response.statusCode = HttpStatusCode.NotFound;
+                    _response.isSuccess = false;
+                    _response.Errors = new List<string>() { "Invalid Villa Id" };
                     return NotFound(_response);
                 }
 
