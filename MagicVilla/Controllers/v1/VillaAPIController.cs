@@ -35,6 +35,8 @@ namespace MagicVilla.v1.Controllers
 
 
         [HttpGet]
+        //[ResponseCache(Duration = 30)]
+        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(200)]
         public async Task<ActionResult<APIResponse>> GetAllVillas()
         {

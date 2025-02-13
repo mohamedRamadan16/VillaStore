@@ -43,10 +43,18 @@ namespace MagicVilla
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.ReportApiVersions = true; // To send supported version in the response headers
             });
-            builder.Services.AddControllers().AddNewtonsoftJson();
+            builder.Services.AddControllers(options =>
+            {
+                options.CacheProfiles.Add("Default30", new CacheProfile()
+                {
+                    Duration = 30
+                });
+
+            }).AddNewtonsoftJson();
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+            builder.Services.AddResponseCaching();
             builder.Services.AddScoped<IVillaRepository, VillaRepository>();
             builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
