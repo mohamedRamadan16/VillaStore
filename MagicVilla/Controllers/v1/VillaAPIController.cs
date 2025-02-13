@@ -7,6 +7,7 @@ using MagicVilla.Repos.IRepo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -38,12 +39,26 @@ namespace MagicVilla.v1.Controllers
         //[ResponseCache(Duration = 30)]
         [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(200)]
-        public async Task<ActionResult<APIResponse>> GetAllVillas()
+        public async Task<ActionResult<APIResponse>> GetAllVillas([FromQuery(Name = "OccupancyFilter")] int? occupancy, [FromQuery] string? name)
         {
             try
             {
                 _logger.Log("Getting All Villas :D", "");
-                IEnumerable<Villa> villaList = await _villaRepository.GetAllAsync();
+
+                /// adding basic filter
+                IEnumerable<Villa> villaList;
+                if (occupancy > 0)
+                    villaList = await _villaRepository.GetAllAsync(v => v.Occupancy == occupancy);
+                else
+                    villaList = await _villaRepository.GetAllAsync();
+
+                /// search for filla based on the name
+                /// https://localhost:7001/api/v1/villaapi?name=pool&occupancyfilter=4
+                if (!string.IsNullOrEmpty(name))
+                    villaList = villaList.Where(v => v.Name.ToLower().Contains(name.ToLower()));
+
+
+
                 _response.statusCode = HttpStatusCode.OK;
                 _response.Result = _mapper.Map<List<VillaDTO>>(villaList);
             }
