@@ -4,6 +4,7 @@ using MagicVilla.Loggings;
 using MagicVilla.Repos;
 using MagicVilla.Repos.IRepo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -27,7 +28,21 @@ namespace MagicVilla
             //    options.ReturnHttpNotAcceptable = true;
             //}).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 
+
+
+
+
+
+
+
+
+
             builder.Services.AddAutoMapper(typeof(MappingConfig));
+            builder.Services.AddApiVersioning(options => {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ReportApiVersions = true; // To send supported version in the response headers
+            });
             builder.Services.AddControllers().AddNewtonsoftJson();
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

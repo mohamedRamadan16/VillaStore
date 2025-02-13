@@ -56,24 +56,24 @@ namespace Magic_Villa_MVC.Services
                 apiResponse = await client.SendAsync(message);
 
                 var apiContent = await apiResponse.Content.ReadAsStringAsync();
-                //try
-                //{
-                //    APIResponse ApiResponse = JsonConvert.DeserializeObject<APIResponse>(apiContent);
+                try
+                {
+                    APIResponse ApiResponse = JsonConvert.DeserializeObject<APIResponse>(apiContent);
 
-                //    if (ApiResponse != null && (apiResponse.StatusCode == System.Net.HttpStatusCode.BadRequest || apiResponse.StatusCode == System.Net.HttpStatusCode.NotFound))
-                //    {
-                //        ApiResponse.statusCode = System.Net.HttpStatusCode.BadRequest;
-                //        ApiResponse.isSuccess = false;
-                //        var res = JsonConvert.SerializeObject(ApiResponse);
-                //        var returnObj = JsonConvert.DeserializeObject<T>(res);
-                //        return returnObj;
-                //    }
-                //}
-                //catch (Exception e)
-                //{
-                //    var exceptionResponse = JsonConvert.DeserializeObject<T>(apiContent);
-                //    return exceptionResponse;
-                //}
+                    if (ApiResponse != null && (apiResponse.StatusCode == System.Net.HttpStatusCode.BadRequest || apiResponse.StatusCode == System.Net.HttpStatusCode.NotFound))
+                    {
+                        ApiResponse.statusCode = System.Net.HttpStatusCode.BadRequest;
+                        ApiResponse.isSuccess = false;
+                        var res = JsonConvert.SerializeObject(ApiResponse);
+                        var returnObj = JsonConvert.DeserializeObject<T>(res);
+                        return returnObj;
+                    }
+                }
+                catch (Exception e)
+                {
+                    var exceptionResponse = JsonConvert.DeserializeObject<T>(apiContent);
+                    return exceptionResponse;
+                }
                 var APIResponse = JsonConvert.DeserializeObject<T>(apiContent);
                 return APIResponse;
 

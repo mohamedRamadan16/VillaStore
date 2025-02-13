@@ -7,8 +7,10 @@ using System.Net;
 
 namespace MagicVilla.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/Users")]
     [ApiController]
+    //[ApiVersion("1.0")]
+    [ApiVersionNeutral]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -30,7 +32,7 @@ namespace MagicVilla.Controllers
             }
 
             // check username exists or not
-            if(await _userRepository.IsUniqueUser(registerationRequestDTO.UserName))
+            if (await _userRepository.IsUniqueUser(registerationRequestDTO.UserName))
             {
                 try
                 {
@@ -68,7 +70,7 @@ namespace MagicVilla.Controllers
             try
             {
                 var LoginResponse = await _userRepository.Login(loginRequestDTO);
-                if(LoginResponse.LocalUser == null || LoginResponse.Token == "")
+                if (LoginResponse.LocalUser == null || LoginResponse.Token == "")
                 {
                     _response.isSuccess = false;
                     _response.statusCode = HttpStatusCode.BadRequest;
@@ -80,10 +82,10 @@ namespace MagicVilla.Controllers
                     _response.statusCode = HttpStatusCode.OK;
                     LoginResponse.LocalUser.Password = "";
                     _response.Result = LoginResponse;
-                    
+
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _response.isSuccess = false;
                 _response.Errors = new List<string>() { ex.ToString() };
@@ -92,6 +94,6 @@ namespace MagicVilla.Controllers
             return _response;
         }
 
-        
+
     }
 }
