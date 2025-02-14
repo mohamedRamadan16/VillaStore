@@ -1,9 +1,11 @@
 using MagicVilla;
 using MagicVilla.Data;
 using MagicVilla.Loggings;
+using MagicVilla.Models;
 using MagicVilla.Repos;
 using MagicVilla.Repos.IRepo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -36,7 +38,7 @@ namespace MagicVilla
 
 
 
-
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddAutoMapper(typeof(MappingConfig));
             builder.Services.AddApiVersioning(options => {
                 options.AssumeDefaultVersionWhenUnspecified = true;

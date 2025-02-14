@@ -7,6 +7,6 @@ namespace MagicVilla.Repos.IRepo
     {
         Task<bool> IsUniqueUser(string UserName);
         Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
-        Task<LocalUser> Register(RegisterationRequestDTO registerationRequestDTO);
+        Task<UserDTO> Register(RegisterationRequestDTO registerationRequestDTO);
     }
 }

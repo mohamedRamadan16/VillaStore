@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.Security.Claims;
 using Magic_Villa_MVC.Models.DTOs;
 using Magic_Villa_MVC.Models;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Magic_Villa_MVC.Controllers
 {
@@ -36,11 +37,16 @@ namespace Magic_Villa_MVC.Controllers
                 LoginResponseDTO model = JsonConvert.DeserializeObject<LoginResponseDTO>(Convert.ToString(response.Result));
 
 
+                var handler = new JwtSecurityTokenHandler();
+                var jwt = handler.ReadJwtToken(model.Token);
+
                 var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                identity.AddClaim(new Claim(ClaimTypes.Name, model.LocalUser.UserName));
-                identity.AddClaim(new Claim(ClaimTypes.Role, model.LocalUser.Role));
+                identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == "unique_name").Value));
+                identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == "role").Value));
                 var principal = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+
 
 
                 HttpContext.Session.SetString(SD.SessionToken, model.Token);

@@ -36,7 +36,7 @@ namespace MagicVilla.Controllers
             {
                 try
                 {
-                    LocalUser user = await _userRepository.Register(registerationRequestDTO);
+                    var user = await _userRepository.Register(registerationRequestDTO);
                     _response.isSuccess = true;
                     _response.statusCode = HttpStatusCode.Created;
                     _response.Result = user;
@@ -70,7 +70,7 @@ namespace MagicVilla.Controllers
             try
             {
                 var LoginResponse = await _userRepository.Login(loginRequestDTO);
-                if (LoginResponse.LocalUser == null || LoginResponse.Token == "")
+                if (LoginResponse.User == null || LoginResponse.Token == "")
                 {
                     _response.isSuccess = false;
                     _response.statusCode = HttpStatusCode.BadRequest;
@@ -80,7 +80,6 @@ namespace MagicVilla.Controllers
                 {
                     _response.isSuccess = true;
                     _response.statusCode = HttpStatusCode.OK;
-                    LoginResponse.LocalUser.Password = "";
                     _response.Result = LoginResponse;
 
                 }
